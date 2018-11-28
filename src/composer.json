@@ -5,7 +5,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\Controller\\":"src/classes"
+            "App\\":"app"
         }
     }
 }

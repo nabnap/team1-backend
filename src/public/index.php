@@ -2,15 +2,10 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require '../../vendor/autoload.php';
+require '../vendor/autoload.php';
 
-$config['displayErrorDetails'] = true;
-$config['addContentLengthHeader'] = false;
-$config['db']['host'] = '192.34.63.80';
-$config['db']['user'] = '';
-$config['db']['pass'] = '';
-$config['db']['dbname'] = 'yetube';
-$app = new \Slim\App(['settings' => $config]);
+$config = require '../app/config.php';
+$app = new \Slim\App($config);
 $container = $app->getContainer();
 $container['logger'] = function($c){
   $logger = new \Monolog\Logger('my_logger');
@@ -29,7 +24,7 @@ $container['db'] = function ($c) {
 };
 
 $container['HomeController'] = function($c) {
-  return new App\Controller\HomeController();
+  return new App\Controllers\HomeController();
 };
 
 $app->get('/hello/{name}', function(Request $request, Response $response, array $args){
