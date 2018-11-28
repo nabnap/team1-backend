@@ -28,11 +28,23 @@ $container['HomeController'] = function($c) {
 };
 
 $app->get('/hello/{name}', function(Request $request, Response $response, array $args){
-  $name = $args['name'];
-  $response->getBody()->write("Hello, $name");
+  //$name = $args['name'];
+  //$response->getBody()->write("Hello, $name");
   $this->logger->addInfo('Something interesting happened');
-  //$stmt = $this->db->prepare("SELECT user_id FROM users");
-  return $response;
+  $stmt = $this->db->prepare("SELECT * FROM users");
+  $table = array();
+  if($stmt->execute()){
+    while($row = $stmt->fetch()){
+      $table[] = $row;
+    }
+  }
+
+  if(sizeof($table) > 0){
+    $newResponse = $response->withJson($table, 201);
+  }else{
+    $newResponse = $response;
+  }
+return $newResponse;
 });
 
 $app->get('/helloo', \HomeController::class . ':home');
