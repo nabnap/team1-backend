@@ -29,7 +29,7 @@ $container['db'] = function ($c) {
 };
 
 $container['HomeController'] = function($c) {
-  return new HomeController();
+  return new App\Controller\HomeController();
 };
 
 $app->get('/hello/{name}', function(Request $request, Response $response, array $args){
