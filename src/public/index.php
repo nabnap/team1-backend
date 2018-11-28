@@ -28,11 +28,18 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+$container['HomeController'] = function($c) {
+  return new HomeController();
+};
+
 $app->get('/hello/{name}', function(Request $request, Response $response, array $args){
   $name = $args['name'];
   $response->getBody()->write("Hello, $name");
   $this->logger->addInfo('Something interesting happened');
+  //$stmt = $this->db->prepare("SELECT user_id FROM users");
   return $response;
 });
+
+$app->get('/helloo', \HomeController::class . ':home');
 $app->run();
 ?>
