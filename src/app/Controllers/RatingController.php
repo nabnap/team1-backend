@@ -17,7 +17,7 @@ class RatingController
       $sql = "INSERT INTO ratings (video_id, user_id, liked) VALUES (?,(SELECT user_id FROM users WHERE auth0_id = ?),?) ON DUPLICATE KEY UPDATE liked = ?";
       $stmt = $this->container->db->prepare($sql);
       $stmt->execute([$video_id, $auth0_id, $liked, $liked]);
-      return $response;
+      return $response->withRedirect('/videos/' . $video_id);
     }
 }
 ?>
