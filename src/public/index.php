@@ -44,12 +44,16 @@ $container['UserController'] = function($c) {
 $container['RatingController'] = function($c) {
   return new App\Controllers\RatingController($c);
 };
-
+$container['CommentController'] = function($c) {
+  return new App\Controllers\CommentController($c);
+};
 //$app->get('/helloo', \HomeController::class . ':home');
 $app->get('/videos', \VideoController::class . ':getAll');
 $app->get('/videos/{id}', \VideoController::class . ':get');
 $app->post('/users',  \UserController::class . ':post');
 $app->post('/ratings', \RatingController::class . ':post');
+$app->post('/comments', \CommentController::class . ':post');
+$app->get('/comments', \CommentController::class . ':get');
 
 /*Routes needed to upload a video!*/
 $app->post('/upload', function(Request $request, Response $response){
