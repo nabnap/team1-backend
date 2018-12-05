@@ -11,9 +11,11 @@ class UserController
     public function __construct(ContainerInterface $container) {
       $this->container = $container;
     }
-    public function home($request, $response, $args) {
-      // your code here
-      // use $this->view to render the HTML
+    public function post($request, $response, $args) {
+      $auth0_id = $request->getParam('authId');
+      $sql = "INSERT IGNORE INTO users (`auth0_id`,`username`) VALUES (?,'Matt Schultz')";
+      $stmt = $this->container->db->prepare($sql);
+      $stmt->execute([$auth0_id]);
       return $response;
     }
 }
