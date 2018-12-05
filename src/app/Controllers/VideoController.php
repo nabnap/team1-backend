@@ -1,5 +1,6 @@
 <?php
 namespace App\Controllers;
+use Psr\Container\ContainerInterface;
 
 class VideoController
 {
