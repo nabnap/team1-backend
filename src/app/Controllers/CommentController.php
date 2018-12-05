@@ -17,7 +17,7 @@ class CommentController
       $sql = "INSERT INTO comments (video_id, user_id, comment) VALUES (?,(SELECT user_id FROM users WHERE auth0_id = ?),?)";
       $stmt = $this->container->db->prepare($sql);
       $stmt->execute([$video_id, $auth0_id, $comment]);
-      $response->withRedirect('/comments/' . $video_id);
+      return $response->withRedirect('/comments/' . $video_id);
     }
     
     public function get($request, $response, $args){
