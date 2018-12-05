@@ -11,7 +11,9 @@ class VideoController
       $this->container = $container;
     }
     public function getAll($request, $response, $args) {
-      $stmt = $this->container->db->prepare("SELECT `video_id`,`user_id`,`title`,`description`,`thumb_src`, `views` FROM `videos` WHERE `loaded` = 1");
+      $sql = "SELECT video_id, username, title, thumb_src, views ";
+      $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id WHERE loaded = 1"
+      $stmt = $this->container->db->prepare($sql);
       $table = array();
       if($stmt->execute()){
         while($row = $stmt->fetch()){
@@ -23,7 +25,10 @@ class VideoController
     
     public function get($request, $response, $args) {
       $video_id = $args['id'];
-      $stmt = $this->container->db->prepare("SELECT `video_id`,`user_id`,`title`,`description`,`video_src`, `views` FROM `videos` WHERE `video_id` = ? AND `loaded` = 1 LIMIT 1");
+      $sql = "SELECT videos.video_id,username,title,description,video_src,views ";
+      $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id LEFT JOIN ratings ON ratings.video_id = videos.video_id";
+      $sql .= "WHERE video_id = ? AND loaded = 1 GROUP videos.video_id LIMIT 1";
+      $stmt = $this->container->db->prepare($sql);
       if($stmt->execute([$video_id])){
         $data = $stmt->fetch();
         $stmt = $this->container->db->prepare("UPDATE `videos` SET `views` = `views` + 1 WHERE `video_id` = ?");
