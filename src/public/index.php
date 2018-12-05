@@ -36,13 +36,13 @@ $app->add(function ($req, $res, $next) {
 });
 
 $container['VideoController'] = function($c) {
-  return new App\Controllers\VideoController();
+  return new App\Controllers\VideoController($c);
 };
 $container['UserController'] = function($c) {
-  return new App\Controllers\UserController();
+  return new App\Controllers\UserController($c);
 };
 $container['RatingController'] = function($c) {
-  return new App\Controllers\RatingController();
+  return new App\Controllers\RatingController($c);
 };
 
 //$app->get('/helloo', \HomeController::class . ':home');
