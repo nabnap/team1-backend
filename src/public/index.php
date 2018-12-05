@@ -49,7 +49,7 @@ $container['RatingController'] = function($c) {
 $app->get('/videos', \VideoController::class . ':getAll');
 $app->get('/videos/{id}', \VideoController::class . ':get');
 $app->post('/users',  \UserController::class . ':post');
-$app->post('/ratings', \RatingController::class . ':post')
+$app->post('/ratings', \RatingController::class . ':post');
 
 /*Routes needed to upload a video!*/
 $app->post('/upload', function(Request $request, Response $response){
