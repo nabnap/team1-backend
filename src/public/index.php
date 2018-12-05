@@ -52,11 +52,11 @@ $app->get('/videos/{id}', \VideoController::class . ':get');
 
 /*Routes needed to upload a video!*/
 $app->post('/upload', function(Request $request, Response $response){
-  $user_id = $request->getParam('userId');
+  $auth0_id = $request->getParam('userId');
   $title = $request->getParam('videoTitle');
   $description = $request->getParam('videoDescription');
-  $stmt = $this->db->prepare("INSERT INTO videos (`user_id`,`title`,`description`) VALUES (?,?,?)");
-  if($stmt->execute([$user_id,$title,$description])){
+  $stmt = $this->db->prepare("INSERT INTO videos (`user_id`,`title`,`description`) VALUES ((SELECT user_id FROM users WHERE auth0_id = ?),?,?)");
+  if($stmt->execute([$auth0_id,$title,$description])){
     $info['inserted_id'] = $this->db->lastInsertId();
   }
   $newResponse = $response->withHeader('Access-Control-Allow-Origin','*')->withJson($info, 201);
@@ -64,7 +64,6 @@ $app->post('/upload', function(Request $request, Response $response){
 });
 
 $app->post('/upload/video', function(Request $request, Response $response){
-  $user_id = $request->getParam('userId');
   $video_id = $request->getParam('videoId');
   $files = $request->getUploadedFiles();
   $video = $files['videoFile'];
@@ -73,21 +72,20 @@ $app->post('/upload/video', function(Request $request, Response $response){
     $extension = pathinfo($video->getClientFilename(), PATHINFO_EXTENSION);
     //$basename = bin2hex(random_bytes(8));
     //$filename = sprintf('%s.%0.8s',$basename,$extension);
-    $filename = 'video_' . $user_id . '_' . $video_id . '.' . $extension;
+    $filename = 'video_' . $video_id . '.' . $extension;
     $path = __DIR__ . '/uploads/videos' . DIRECTORY_SEPARATOR . $filename;
     $video->moveTo($path);
 
-    $stmt = $this->db->prepare("UPDATE `videos` SET `video_src` = ? WHERE `video_id` = ? AND `user_id` = ?");
-    $stmt->execute([$filename, $video_id, $user_id]);
+    $stmt = $this->db->prepare("UPDATE `videos` SET `video_src` = ? WHERE `video_id` = ?");
+    $stmt->execute([$filename, $video_id]);
     $info['ext'] = $extension;
     $info['filename'] = $filename;
     $info['path'] = $path;
   }
-  return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($info, 201);
+  return $response->withJson($info, 201);
 });
 
 $app->post('/upload/thumb', function(Request $request, Response $response){
-  $user_id = $request->getParam('userId');
   $video_id = $request->getParam('videoId');
   $files = $request->getUploadedFiles();
 
@@ -95,19 +93,19 @@ $app->post('/upload/thumb', function(Request $request, Response $response){
   $info = array();
   if($thumb->getError() === UPLOAD_ERR_OK){
     $extension = pathinfo($thumb->getClientFilename(), PATHINFO_EXTENSION);
-    $filename = 'thumb_' . $user_id . '_' . $video_id . '.' . $extension;
+    $filename = 'thumb_' . $video_id . '.' . $extension;
     $path = __DIR__ . '/uploads/thumbs' . DIRECTORY_SEPARATOR . $filename;
     $thumb->moveTo($path);
 
-    $stmt = $this->db->prepare("UPDATE `videos` SET `thumb_src` = ?, `loaded` = 1 WHERE `video_id` = ? AND `user_id` = ?");
-    $stmt->execute([$filename, $video_id, $user_id]);
+    $stmt = $this->db->prepare("UPDATE `videos` SET `thumb_src` = ?, `loaded` = 1 WHERE `video_id` = ?");
+    $stmt->execute([$filename, $video_id]);
 
     $info['ext'] = $extension;
     $info['filename'] = $filename;
     $info['path'] = $path;
   }
 
-  return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($info, 201);
+  return $response->withJson($info, 201);
 });
 
 $app->run();
