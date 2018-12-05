@@ -20,7 +20,7 @@ class VideoController
           $table[] = $row;
         }
       }
-        return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($table, 201);
+        return $response->withJson($table, 201);
     }
     
     public function get($request, $response, $args) {

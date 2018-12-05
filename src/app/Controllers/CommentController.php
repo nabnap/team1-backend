@@ -23,11 +23,20 @@ class CommentController
       $video_id = $args['id'];
       $sql = "SELECT comment_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ?";
       $stmt = $this->container->db->prepare($sql);
-      $data = array();
+      
+      $table = array();
+      if($stmt->execute([$video_id])){
+        while($row = $stmt->fetch()){
+          $table[] = $row;
+        }
+      }
+      return $response->withJson($table, 201);
+        
+      /*$data = array();
       if($stmt->execute([$video_id])){
         $data = $stmt->fetch(); 
       }
-      return $response->withJson($data, 201);
+      return $response->withJson($data, 201);*/
     }
 }
 ?>
