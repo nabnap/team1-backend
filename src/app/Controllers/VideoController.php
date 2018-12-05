@@ -12,7 +12,7 @@ class VideoController
     }
     public function getAll($request, $response, $args) {
       $sql = "SELECT video_id, username, title, thumb_src, views ";
-      $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id WHERE loaded = 1"
+      $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id WHERE loaded = 1";
       $stmt = $this->container->db->prepare($sql);
       $table = array();
       if($stmt->execute()){
