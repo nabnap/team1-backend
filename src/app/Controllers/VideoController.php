@@ -33,9 +33,9 @@ class VideoController
         $data = $stmt->fetch();
         $stmt = $this->container->db->prepare("UPDATE `videos` SET `views` = `views` + 1 WHERE `video_id` = ?");
         $stmt->execute([$video_id]);
-        return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($data, 201);
+        return $response->withJson($data, 201);
       }
-      return $response->withHeader('Access-Control-Allow-Origin','*')->withJson(array([]), 201);
+      return $response->withJson(array([]), 201);
     }
 }
 ?>
