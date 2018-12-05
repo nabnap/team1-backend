@@ -17,11 +17,12 @@ class CommentController
       $sql = "INSERT INTO comments (video_id, user_id, comment) VALUES (?,(SELECT user_id FROM users WHERE auth0_id = ?),?)";
       $stmt = $this->container->db->prepare($sql);
       $stmt->execute([$video_id, $auth0_id, $comment]);
+      $response->withRedirect('/comments/' . $video_id);
     }
     
     public function get($request, $response, $args){
       $video_id = $args['id'];
-      $sql = "SELECT comment_id, users.user_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ?";
+      $sql = "SELECT comment_id, users.user_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ? ORDER BY comment_id DESC";
       $stmt = $this->container->db->prepare($sql);
       
       $table = array();
