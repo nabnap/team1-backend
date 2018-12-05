@@ -53,7 +53,7 @@ $app->get('/videos/{id}', \VideoController::class . ':get');
 $app->post('/users',  \UserController::class . ':post');
 $app->post('/ratings', \RatingController::class . ':post');
 $app->post('/comments', \CommentController::class . ':post');
-$app->get('/comments', \CommentController::class . ':get');
+$app->get('/comments/{id}', \CommentController::class . ':get');
 
 /*Routes needed to upload a video!*/
 $app->post('/upload', function(Request $request, Response $response){
