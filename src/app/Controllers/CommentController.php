@@ -27,7 +27,7 @@ class CommentController
       if($stmt->execute([$video_id])){
         $data = $stmt->fetch(); 
       }
-      return $request->withJson($data, 201);
+      return $response->withJson($data, 201);
     }
 }
 ?>
