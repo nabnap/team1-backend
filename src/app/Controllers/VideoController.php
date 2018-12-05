@@ -11,7 +11,7 @@ class VideoController
       $this->container = $container;
     }
     public function getAll($request, $response, $args) {
-      $sql = "SELECT video_id, username, title, thumb_src, views ";
+      $sql = "SELECT video_id, users.user_id,username, title, thumb_src, views ";
       $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id WHERE loaded = 1";
       $stmt = $this->container->db->prepare($sql);
       $table = array();
@@ -25,7 +25,7 @@ class VideoController
     
     public function get($request, $response, $args) {
       $video_id = $args['id'];
-      $sql = "SELECT videos.video_id,username,title,description,video_src,views, SUM(liked) AS likes, COUNT(liked) AS total ";
+      $sql = "SELECT videos.video_id,users.user_id,username,title,description,video_src,views, SUM(liked) AS likes, COUNT(liked) AS total ";
       $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id LEFT JOIN ratings ON ratings.video_id = videos.video_id ";
       $sql .= "WHERE videos.video_id = ? AND loaded = 1 GROUP BY videos.video_id LIMIT 1";
       $stmt = $this->container->db->prepare($sql);

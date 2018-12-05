@@ -21,7 +21,7 @@ class CommentController
     
     public function get($request, $response, $args){
       $video_id = $args['id'];
-      $sql = "SELECT comment_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ?";
+      $sql = "SELECT comment_id, users.user_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ?";
       $stmt = $this->container->db->prepare($sql);
       
       $table = array();
