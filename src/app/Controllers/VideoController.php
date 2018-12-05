@@ -27,7 +27,7 @@ class VideoController
       $video_id = $args['id'];
       $sql = "SELECT videos.video_id,username,title,description,video_src,views, SUM(liked) AS likes, COUNT(liked) AS total ";
       $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id LEFT JOIN ratings ON ratings.video_id = videos.video_id ";
-      $sql .= "WHERE video_id = ? AND loaded = 1 GROUP BY videos.video_id LIMIT 1";
+      $sql .= "WHERE videos.video_id = ? AND loaded = 1 GROUP BY videos.video_id LIMIT 1";
       $stmt = $this->container->db->prepare($sql);
       if($stmt->execute([$video_id])){
         $data = $stmt->fetch();
