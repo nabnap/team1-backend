@@ -23,54 +23,29 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
-$container['HomeController'] = function($c) {
-  return new App\Controllers\HomeController();
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', 'http://mysite')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+
+$container['VideoController'] = function($c) {
+  return new App\Controllers\VideoController();
+};
+$container['UserController'] = function($c) {
+  return new App\Controllers\UserController();
+};
+$container['RatingController'] = function($c) {
+  return new App\Controllers\RatingController();
 };
 
-$app->get('/hello/{name}', function(Request $request, Response $response, array $args){
-  //$name = $args['name'];
-  //$response->getBody()->write("Hello, $name");
-  $this->logger->addInfo('Something interesting happened');
-  $stmt = $this->db->prepare("SELECT * FROM users");
-  $table = array();
-  if($stmt->execute()){
-    while($row = $stmt->fetch()){
-      $table[] = $row;
-    }
-  }
-
-  if(sizeof($table) > 0){
-    $newResponse = $response->withJson($table, 201);
-  }else{
-    $newResponse = $response;
-  }
-return $newResponse;
-});
-
 //$app->get('/helloo', \HomeController::class . ':home');
+$app->get('/videos', \VideoController::class . ':getAll');
+$app->get('/videos/{id}', \VideoController::class . ':get');
 
-/*Routes needed to get videos*/
-$app->get('/videos', function(Request $request, Response $response){
-  $stmt = $this->db->prepare("SELECT `video_id`,`user_id`,`title`,`description`,`thumb_src`, `views` FROM `videos` WHERE `loaded` = 1");
-  $table = array();
-  if($stmt->execute()){
-    while($row = $stmt->fetch()){
-      $table[] = $row;
-    }
-  }
-    return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($table, 201);
-});
-$app->get('/videos/{id}', function(Request $request, Response $response, array $args){
-  $video_id = $args['id'];
-  $stmt = $this->db->prepare("SELECT `video_id`,`user_id`,`title`,`description`,`video_src`, `views` FROM `videos` WHERE `video_id` = ? AND `loaded` = 1 LIMIT 1");
-  if($stmt->execute([$video_id])){
-    $data = $stmt->fetch();
-    $stmt = $this->db->prepare("UPDATE `videos` SET `views` = `views` + 1 WHERE `video_id` = ?");
-    $stmt->execute([$video_id]);
-    return $response->withHeader('Access-Control-Allow-Origin','*')->withJson($data, 201);
-  }
-  return $response->withHeader('Access-Control-Allow-Origin','*')->withJson(array([]), 201);
-});
+
 /*Routes needed to upload a video!*/
 $app->post('/upload', function(Request $request, Response $response){
   $user_id = $request->getParam('userId');
