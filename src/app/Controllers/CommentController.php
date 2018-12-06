@@ -22,7 +22,7 @@ class CommentController
     
     public function get($request, $response, $args){
       $video_id = $args['id'];
-      $sql = "SELECT comment_id, users.user_id, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ? ORDER BY comment_id DESC";
+      $sql = "SELECT comment_id, users.user_id,picture, username, comment FROM comments JOIN users ON users.user_id = comments.user_id WHERE video_id = ? ORDER BY comment_id DESC";
       $stmt = $this->container->db->prepare($sql);
       
       $table = array();

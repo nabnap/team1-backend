@@ -13,9 +13,11 @@ class UserController
     }
     public function post($request, $response, $args) {
       $auth0_id = $request->getParam('authId');
-      $sql = "INSERT IGNORE INTO users (`auth0_id`,`username`) VALUES (?,'Matt Schultz')";
+      $picture = $request->getParam('picture');
+      $username = $request->getParam('username');
+      $sql = "INSERT INTO users (`auth0_id`,`username`, `picture`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `username` = ?, `picture` = ?";
       $stmt = $this->container->db->prepare($sql);
-      $stmt->execute([$auth0_id]);
+      $stmt->execute([$auth0_id, $username, $picture, $username, $picture]);
       return $response;
     }
 }

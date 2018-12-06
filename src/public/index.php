@@ -50,6 +50,7 @@ $container['CommentController'] = function($c) {
 //$app->get('/helloo', \HomeController::class . ':home');
 $app->get('/videos', \VideoController::class . ':getAll');
 $app->get('/videos/{id}', \VideoController::class . ':get');
+$app->get('/videos/filter/{by}', \VideoController::class . ':filter');
 $app->post('/users',  \UserController::class . ':post');
 $app->post('/ratings', \RatingController::class . ':post');
 $app->post('/comments', \CommentController::class . ':post');
