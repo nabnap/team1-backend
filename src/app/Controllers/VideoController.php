@@ -45,17 +45,17 @@ class VideoController
         case "views":
           $sql = "SELECT videos.video_id, users.user_id, username, title, thumb_src, views ";
           $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id ";
-          $sql .= "WHERE loaded = 1 ORDER BY views DESC LIMIT 5";
+          $sql .= "WHERE loaded = 1 ORDER BY views DESC LIMIT 10";
           break;
         case "ratings":
           $sql = "SELECT videos.video_id, users.user_id, username, title, thumb_src, views, IFNULL(SUM(liked),0) AS likes ";
           $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id LEFT JOIN ratings ON ratings.video_id = videos.video_id ";
-          $sql .= "WHERE loaded = 1 GROUP BY videos.video_id ORDER BY likes DESC LIMIT 5";
+          $sql .= "WHERE loaded = 1 GROUP BY videos.video_id ORDER BY likes DESC LIMIT 10";
           break;
         case "new":
           $sql = "SELECT videos.video_id, users.user_id, username, title, thumb_src, views ";
           $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id ";
-          $sql .= "WHERE loaded = 1 ORDER BY video_id DESC LIMIT 5";
+          $sql .= "WHERE loaded = 1 ORDER BY video_id DESC LIMIT 10";
           break;
         default:
           return $response->withRedirect('/videos');
@@ -68,6 +68,22 @@ class VideoController
           $table[] = $row;
         }
       }
+      return $response->withJson($table, 201);
+    }
+
+    public function search($request, $response, $args){
+      $term = $request->getParam('term');
+      $sql = "SELECT videos.video_id, users.user_id, username, title, description, thumb_src, views ";
+      $sql .= "FROM videos JOIN users ON users.user_id = videos.user_id ";
+      $sql .= "WHERE loaded = 1 AND title LIKE CONCAT('%',?,'%')";
+      $stmt = $this->container->db->prepare($sql);
+      $table = array();
+      if($stmt->execute([$term])){
+        while($row = $stmt->fetch()){
+          $table[] = $row;
+        }
+      }
+
       return $response->withJson($table, 201);
     }
 }
